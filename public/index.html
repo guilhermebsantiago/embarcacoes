@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚢 Sistema de Embarcações</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- LOGIN -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-header">
+        <span class="login-icon">⚓</span>
+        <h1>Sistema de Embarcações</h1>
+        <p>Faça login para continuar</p>
+      </div>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" required placeholder="seu.email@email.com">
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="loginPassword" required placeholder="Sua senha">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+        <p class="login-hint">Ex: joao.silva@email.com / hash_senha_123</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="mainApp" class="app-container" style="display: none;">
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">⚓</span>
+        <h1>Sistema de Embarcações</h1>
+      </div>
+      <div class="header-right">
+        <div class="user-info">
+          <span id="userName">Usuário</span>
+          <span id="userRole" class="badge">Role</span>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="logout()">Sair</button>
+      </div>
+    </header>
+
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="consultas">📊 Consultas</button>
+      <button class="tab-btn" data-tab="clientes">🧑‍💼 Clientes</button>
+      <button class="tab-btn" data-tab="usuarios">🔐 Usuários</button>
+      <button class="tab-btn" data-tab="embarcacoes">🚢 Embarcações</button>
+      <button class="tab-btn" data-tab="orgaos">🏛️ Órgãos</button>
+      <button class="tab-btn" data-tab="processos">📋 Processos</button>
+      <button class="tab-btn" data-tab="documentos">📄 Documentos</button>
+      <button class="tab-btn" data-tab="inspecoes">🔍 Inspeções</button>
+    </nav>
+
+    <main class="main-content">
+      
+      <!-- CONSULTAS -->
+      <section class="tab-content active" id="consultas">
+        <h2>Consultas e Visões</h2>
+        <div class="query-grid">
+          <div class="query-card" onclick="executarConsulta('clientes-embarcacoes')">
+            <h3>👥 Clientes e Embarcações</h3>
+            <p>Total de embarcações por cliente</p>
+          </div>
+          <div class="query-card" onclick="executarConsulta('orgaos-processos')">
+            <h3>🏛️ Órgãos Ativos</h3>
+            <p>Órgãos com múltiplos processos ativos</p>
+          </div>
+          <div class="query-card" onclick="executarConsulta('documentos-clientes')">
+            <h3>📄 Documentos</h3>
+            <p>Documentos de clientes com embarcações</p>
+          </div>
+          <div class="query-card" onclick="executarConsulta('processos-inspecoes')">
+            <h3>📝 Processos Inspecionados</h3>
+            <p>Processos que possuem inspeções</p>
+          </div>
+          <div class="query-card" onclick="executarConsulta('embarcacao-maior')">
+            <h3>🚤 Maior Embarcação</h3>
+            <p>Embarcação com maior capacidade</p>
+          </div>
+          <div class="query-card featured" onclick="executarConsulta('painel-geral')">
+            <h3>📊 Painel Geral</h3>
+            <p>Visão completa do sistema</p>
+          </div>
+        </div>
+        <div id="consultaResultado" class="table-container" style="margin-top: 20px;"></div>
+      </section>
+
+      <!-- CLIENTES -->
+      <section class="tab-content" id="clientes">
+        <div class="tab-header">
+          <h2>🧑‍💼 Clientes</h2>
+          <div class="search-box">
+            <input type="text" id="searchClientes" placeholder="🔍 Pesquisar..." oninput="filterTable('clientes')">
+          </div>
+          <button class="btn btn-success" id="btnNovoClientes" onclick="toggleForm('clientes')">
+            <span class="btn-icon">+</span> Novo Cliente
+          </button>
+        </div>
+        <div id="formClientes" class="form-panel" style="display: none;">
+          <h3 id="formClientesTitle">Novo Cliente</h3>
+          <form id="formClienteData" onsubmit="saveCliente(event)">
+            <input type="hidden" name="editId">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Primeiro Nome *</label>
+                <input type="text" name="firstName" required maxlength="20">
+              </div>
+              <div class="form-group">
+                <label>Sobrenome *</label>
+                <input type="text" name="lastName" required maxlength="20">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>CPF *</label>
+                <input type="text" name="cpf" required maxlength="14" placeholder="123.456.789-00">
+              </div>
+              <div class="form-group">
+                <label>RG</label>
+                <input type="text" name="rg" maxlength="20">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Telefone Principal</label>
+              <input type="text" name="phone" maxlength="20" placeholder="+5511999999999">
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-secondary" onclick="toggleForm('clientes')">Cancelar</button>
+            </div>
+          </form>
+        </div>
+        <div id="tableClientes" class="table-container"></div>
+      </section>
+
+      <!-- USUÁRIOS -->
+      <section class="tab-content" id="usuarios">
+        <div class="tab-header">
+          <h2>🔐 Usuários do Sistema</h2>
+          <div class="search-box">
+            <input type="text" id="searchUsuarios" placeholder="🔍 Pesquisar..." oninput="filterTable('usuarios')">
+          </div>
+          <button class="btn btn-success" id="btnNovoUsuarios" onclick="toggleForm('usuarios')">
+            <span class="btn-icon">+</span> Novo Usuário
+          </button>
+        </div>
+        <div id="formUsuarios" class="form-panel" style="display: none;">
+          <h3 id="formUsuariosTitle">Novo Usuário</h3>
+          <form id="formUsuarioData" onsubmit="saveUsuario(event)">
+            <input type="hidden" name="editId">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Cliente *</label>
+                <select name="idPerson" id="selectClienteUsuario" required>
+                  <option value="">Selecione um cliente...</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Perfil *</label>
+                <select name="role" required>
+                  <option value="Operador">Operador</option>
+                  <option value="Supervisor">Supervisor</option>
+                  <option value="Gerente">Gerente</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="email" required maxlength="150">
+              </div>
+              <div class="form-group">
+                <label>Senha *</label>
+                <input type="password" name="password" required maxlength="255">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-secondary" onclick="toggleForm('usuarios')">Cancelar</button>
+            </div>
+          </form>
+        </div>
+        <div id="tableUsuarios" class="table-container"></div>
+      </section>
+
+      <!-- EMBARCAÇÕES -->
+      <section class="tab-content" id="embarcacoes">
+        <div class="tab-header">
+          <h2>🚢 Embarcações</h2>
+          <span class="badge">Stored Procedure + Trigger</span>
+          <div class="search-box">
+            <input type="text" id="searchEmbarcacoes" placeholder="🔍 Pesquisar..." oninput="filterTable('embarcacoes')">
+          </div>
+          <button class="btn btn-success" id="btnNovoEmbarcacoes" onclick="toggleForm('embarcacoes')">
+            <span class="btn-icon">+</span> Nova Embarcação
+          </button>
+        </div>
+        <div id="formEmbarcacoes" class="form-panel" style="display: none;">
+          <h3 id="formEmbarcacoesTitle">Nova Embarcação</h3>
+          <form id="formEmbarcacaoData" onsubmit="saveEmbarcacao(event)">
+            <input type="hidden" name="editId">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nome *</label>
+                <input type="text" name="nome" required maxlength="100">
+              </div>
+              <div class="form-group">
+                <label>Tipo</label>
+                <select name="tipo">
+                  <option value="Lancha">Lancha</option>
+                  <option value="Iate">Iate</option>
+                  <option value="Veleiro">Veleiro</option>
+                  <option value="Catamarã">Catamarã</option>
+                  <option value="Barco de Pesca">Barco de Pesca</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Capacidade (pessoas) *</label>
+                <input type="number" name="capacidade" required min="1">
+              </div>
+              <div class="form-group">
+                <label>Tamanho (metros) *</label>
+                <input type="number" name="tamanho" required step="0.01" min="0.01">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Proprietário (Cliente) *</label>
+              <select name="idCliente" id="selectClienteEmbarcacao" required>
+                <option value="">Selecione o proprietário...</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-secondary" onclick="toggleForm('embarcacoes')">Cancelar</button>
+            </div>
+          </form>
+        </div>
+        <div id="tableEmbarcacoes" class="table-container"></div>
+      </section>
+
+      <!-- ÓRGÃOS -->
+      <section class="tab-content" id="orgaos">
+        <div class="tab-header">
+          <h2>🏛️ Órgãos</h2>
+          <div class="search-box">
+            <input type="text" id="searchOrgaos" placeholder="🔍 Pesquisar..." oninput="filterTable('orgaos')">
+          </div>
+          <button class="btn btn-success" id="btnNovoOrgaos" onclick="toggleForm('orgaos')">
+            <span class="btn-icon">+</span> Novo Órgão
+          </button>
+        </div>
+        <div id="formOrgaos" class="form-panel" style="display: none;">
+          <h3 id="formOrgaosTitle">Novo Órgão</h3>
+          <form id="formOrgaoData" onsubmit="saveOrgao(event)">
+            <input type="hidden" name="editId">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nome do Órgão *</label>
+                <input type="text" name="organName" required maxlength="100">
+              </div>
+              <div class="form-group">
+                <label>Sigla</label>
+                <input type="text" name="sail" maxlength="50">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-secondary" onclick="toggleForm('orgaos')">Cancelar</button>
+            </div>
+          </form>
+        </div>
+        <div id="tableOrgaos" class="table-container"></div>
+      </section>
+
+      <!-- PROCESSOS -->
+      <section class="tab-content" id="processos">
+        <div class="tab-header">
+          <h2>📋 Processos</h2>
+          <div class="search-box">
+            <input type="text" id="searchProcessos" placeholder="🔍 Pesquisar..." oninput="filterTable('processos')">
+          </div>
+          <button class="btn btn-success" id="btnNovoProcessos" onclick="toggleForm('processos')">
+            <span class="btn-icon">+</span> Novo Processo
+          </button>
+        </div>
+        <div id="formProcessos" class="form-panel" style="display: none;">
+          <h3 id="formProcessosTitle">Novo Processo</h3>
+          <form id="formProcessoData" onsubmit="saveProcesso(event)">
+            <input type="hidden" name="editId">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nome do Processo *</label>
+                <input type="text" name="processName" required maxlength="100">
+              </div>
+              <div class="form-group">
+                <label>Número *</label>
+                <input type="text" name="processNumber" required maxlength="50" placeholder="PROC-2024-XXX">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Status</label>
+                <select name="status">
+                  <option value="Pendente">Pendente</option>
+                  <option value="Em Análise">Em Análise</option>
+                  <option value="Aprovado">Aprovado</option>
+                  <option value="Ativo">Ativo</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Órgão Responsável *</label>
+                <select name="idOrgan" id="selectOrgaoProcesso" required>
+                  <option value="">Selecione o órgão...</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-secondary" onclick="toggleForm('processos')">Cancelar</button>
+            </div>
+          </form>
+        </div>
+        <div id="tableProcessos" class="table-container"></div>
+      </section>
+
+      <!-- DOCUMENTOS -->
+      <section class="tab-content" id="documentos">
+        <div class="tab-header">
+          <h2>📄 Documentos</h2>
+          <div class="search-box">
+            <input type="text" id="searchDocumentos" placeholder="🔍 Pesquisar..." oninput="filterTable('documentos')">
+          </div>
+          <button class="btn btn-success" id="btnNovoDocumentos" onclick="toggleForm('documentos')">
+            <span class="btn-icon">+</span> Novo Documento
+          </button>
+        </div>
+        <div id="formDocumentos" class="form-panel" style="display: none;">
+          <h3 id="formDocumentosTitle">Novo Documento</h3>
+          <form id="formDocumentoData" onsubmit="saveDocumento(event)">
+            <input type="hidden" name="editId">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nome do Documento *</label>
+                <input type="text" name="name" required maxlength="150">
+              </div>
+              <div class="form-group">
+                <label>Caminho/Arquivo *</label>
+                <input type="text" name="path" required maxlength="500" placeholder="/docs/arquivo.pdf">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Cliente *</label>
+                <select name="idClient" id="selectClienteDocumento" required>
+                  <option value="">Selecione o cliente...</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Órgão Emissor</label>
+                <select name="idOrgan" id="selectOrgaoDocumento">
+                  <option value="">Nenhum</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-secondary" onclick="toggleForm('documentos')">Cancelar</button>
+            </div>
+          </form>
+        </div>
+        <div id="tableDocumentos" class="table-container"></div>
+      </section>
+
+      <!-- INSPEÇÕES -->
+      <section class="tab-content" id="inspecoes">
+        <div class="tab-header">
+          <h2>🔍 Inspeções</h2>
+          <div class="search-box">
+            <input type="text" id="searchInspecoes" placeholder="🔍 Pesquisar..." oninput="filterTable('inspecoes')">
+          </div>
+          <button class="btn btn-success" id="btnNovoInspecoes" onclick="toggleForm('inspecoes')">
+            <span class="btn-icon">+</span> Nova Inspeção
+          </button>
+        </div>
+        <div id="formInspecoes" class="form-panel" style="display: none;">
+          <h3 id="formInspecoesTitle">Nova Inspeção</h3>
+          <form id="formInspecaoData" onsubmit="saveInspecao(event)">
+            <input type="hidden" name="editIdProcess">
+            <input type="hidden" name="editCode">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Processo *</label>
+                <select name="idProcess" id="selectProcessoInspecao" required>
+                  <option value="">Selecione o processo...</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Código *</label>
+                <input type="text" name="code" required maxlength="20" placeholder="INSP-XXX">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nome da Inspeção *</label>
+                <input type="text" name="name" required maxlength="100">
+              </div>
+              <div class="form-group">
+                <label>Data *</label>
+                <input type="date" name="date" required>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-secondary" onclick="toggleForm('inspecoes')">Cancelar</button>
+            </div>
+          </form>
+        </div>
+        <div id="tableInspecoes" class="table-container"></div>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <p>Trabalho de BD • PostgreSQL • Stored Procedure + Trigger + Controle de Usuários</p>
+    </footer>
+  </div>
+
+  <!-- MODAL DE CONFIRMAÇÃO -->
+  <div id="confirmModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-icon">⚠️</div>
+      <h3>Confirmar Exclusão</h3>
+      <p id="confirmMessage">Tem certeza que deseja excluir este registro?</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
