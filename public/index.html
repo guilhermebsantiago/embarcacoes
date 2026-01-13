@@ -18,12 +18,12 @@
       </div>
       <form id="loginForm" onsubmit="handleLogin(event)">
         <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="loginEmail" required placeholder="seu.email@email.com">
+          <label>Email <span class="char-limit">(máx. 150)</span></label>
+          <input type="email" id="loginEmail" required maxlength="150" placeholder="seu.email@email.com">
         </div>
         <div class="form-group">
-          <label>Senha</label>
-          <input type="password" id="loginPassword" required placeholder="Sua senha">
+          <label>Senha <span class="char-limit">(máx. 255)</span></label>
+          <input type="password" id="loginPassword" required maxlength="255" placeholder="Sua senha">
         </div>
         <button type="submit" class="btn btn-primary btn-block">Entrar</button>
         <p class="login-hint">Ex: joao.silva@email.com / hash_senha_123</p>
@@ -109,26 +109,26 @@
             <input type="hidden" name="editId">
             <div class="form-row">
               <div class="form-group">
-                <label>Primeiro Nome *</label>
+                <label>Primeiro Nome * <span class="char-limit">(máx. 20)</span></label>
                 <input type="text" name="firstName" required maxlength="20">
               </div>
               <div class="form-group">
-                <label>Sobrenome *</label>
+                <label>Sobrenome * <span class="char-limit">(máx. 20)</span></label>
                 <input type="text" name="lastName" required maxlength="20">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>CPF *</label>
+                <label>CPF * <span class="char-limit">(máx. 14)</span></label>
                 <input type="text" name="cpf" required maxlength="14" placeholder="123.456.789-00">
               </div>
               <div class="form-group">
-                <label>RG</label>
+                <label>RG <span class="char-limit">(máx. 20)</span></label>
                 <input type="text" name="rg" maxlength="20">
               </div>
             </div>
             <div class="form-group">
-              <label>Telefone Principal</label>
+              <label>Telefone Principal <span class="char-limit">(máx. 20)</span></label>
               <input type="text" name="phone" maxlength="20" placeholder="+5511999999999">
             </div>
             <div class="form-actions">
@@ -157,11 +157,11 @@
             <input type="hidden" name="editId">
             <div class="form-row">
               <div class="form-group">
-                <label>Primeiro Nome *</label>
+                <label>Primeiro Nome * <span class="char-limit">(máx. 20)</span></label>
                 <input type="text" name="firstName" required maxlength="20">
               </div>
               <div class="form-group">
-                <label>Sobrenome *</label>
+                <label>Sobrenome * <span class="char-limit">(máx. 20)</span></label>
                 <input type="text" name="lastName" required maxlength="20">
               </div>
             </div>
@@ -176,12 +176,12 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Email *</label>
+                <label>Email * <span class="char-limit">(máx. 150)</span></label>
                 <input type="email" name="email" required maxlength="150">
               </div>
             </div>
             <div class="form-group">
-              <label>Senha *</label>
+              <label>Senha * <span class="char-limit">(máx. 255)</span></label>
               <input type="password" name="password" required maxlength="255">
             </div>
             <div class="form-actions">
@@ -211,11 +211,11 @@
             <input type="hidden" name="editId">
             <div class="form-row">
               <div class="form-group">
-                <label>Nome *</label>
+                <label>Nome * <span class="char-limit">(máx. 100)</span></label>
                 <input type="text" name="nome" required maxlength="100">
               </div>
               <div class="form-group">
-                <label>Tipo</label>
+                <label>Tipo <span class="char-limit">(máx. 50)</span></label>
                 <select name="tipo">
                   <option value="Lancha">Lancha</option>
                   <option value="Iate">Iate</option>
@@ -227,11 +227,11 @@
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Capacidade (pessoas) *</label>
+                <label>Capacidade (pessoas) * <span class="char-limit">(mín. 1)</span></label>
                 <input type="number" name="capacidade" required min="1">
               </div>
               <div class="form-group">
-                <label>Tamanho (metros) *</label>
+                <label>Tamanho (metros) * <span class="char-limit">(mín. 0.01)</span></label>
                 <input type="number" name="tamanho" required step="0.01" min="0.01">
               </div>
             </div>
@@ -267,11 +267,11 @@
             <input type="hidden" name="editId">
             <div class="form-row">
               <div class="form-group">
-                <label>Nome do Órgão *</label>
+                <label>Nome do Órgão * <span class="char-limit">(máx. 100)</span></label>
                 <input type="text" name="organName" required maxlength="100">
               </div>
               <div class="form-group">
-                <label>Sigla</label>
+                <label>Sigla <span class="char-limit">(máx. 50)</span></label>
                 <input type="text" name="sail" maxlength="50">
               </div>
             </div>
@@ -301,11 +301,11 @@
             <input type="hidden" name="editId">
             <div class="form-row">
               <div class="form-group">
-                <label>Nome do Processo *</label>
+                <label>Nome do Processo * <span class="char-limit">(máx. 100)</span></label>
                 <input type="text" name="processName" required maxlength="100">
               </div>
               <div class="form-group">
-                <label>Número *</label>
+                <label>Número * <span class="char-limit">(máx. 50)</span></label>
                 <input type="text" name="processNumber" required maxlength="50" placeholder="PROC-2024-XXX">
               </div>
             </div>
@@ -352,11 +352,11 @@
             <input type="hidden" name="editId">
             <div class="form-row">
               <div class="form-group">
-                <label>Nome do Documento *</label>
+                <label>Nome do Documento * <span class="char-limit">(máx. 150)</span></label>
                 <input type="text" name="name" required maxlength="150">
               </div>
               <div class="form-group">
-                <label>Caminho/Arquivo *</label>
+                <label>Caminho/Arquivo * <span class="char-limit">(máx. 500)</span></label>
                 <input type="text" name="path" required maxlength="500" placeholder="/docs/arquivo.pdf">
               </div>
             </div>
@@ -407,13 +407,13 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Código *</label>
+                <label>Código * <span class="char-limit">(máx. 20)</span></label>
                 <input type="text" name="code" required maxlength="20" placeholder="INSP-XXX">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Nome da Inspeção *</label>
+                <label>Nome da Inspeção * <span class="char-limit">(máx. 100)</span></label>
                 <input type="text" name="name" required maxlength="100">
               </div>
               <div class="form-group">
