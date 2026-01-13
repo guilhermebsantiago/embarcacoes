@@ -1,11 +1,6 @@
-// ============================================
-// SISTEMA DE EMBARCAÇÕES
-// ============================================
-
 const API = '/api';
 let currentUser = null;
 
-// Cache de dados
 let cacheClientes = [];
 let cacheOrgaos = [];
 let cacheProcessos = [];
@@ -13,10 +8,6 @@ let cacheUsuarios = [];
 let cacheEmbarcacoes = [];
 let cacheDocumentos = [];
 let cacheInspecoes = [];
-
-// ============================================
-// INIT
-// ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
   initTabs();
@@ -30,10 +21,6 @@ function checkSession() {
     showApp();
   }
 }
-
-// ============================================
-// LOGIN / LOGOUT
-// ============================================
 
 async function handleLogin(e) {
   e.preventDefault();
@@ -80,10 +67,6 @@ function isAdmin() {
   return currentUser && (currentUser.Role === 'Admin' || currentUser.Role === 'Gerente');
 }
 
-// ============================================
-// TABS
-// ============================================
-
 function initTabs() {
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -96,10 +79,6 @@ function initTabs() {
   });
 }
 
-// ============================================
-// LOAD ALL DATA
-// ============================================
-
 async function loadAllData() {
   await Promise.all([
     loadClientes(),
@@ -111,10 +90,6 @@ async function loadAllData() {
     loadInspecoes()
   ]);
 }
-
-// ============================================
-// TOGGLE FORM
-// ============================================
 
 function toggleForm(entity) {
   const form = document.getElementById('form' + capitalize(entity));
@@ -148,8 +123,6 @@ function openFormForEdit(entity, data) {
   title.textContent = 'Editar ' + getEntityName(entity);
   
   loadSelectsForEntity(entity);
-  
-  // Scroll para o formulário
   form.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -215,10 +188,6 @@ function populateSelect(selectId, data, valueKey, labelFn, addEmpty = false) {
   
   if (currentValue) select.value = currentValue;
 }
-
-// ============================================
-// CLIENTES
-// ============================================
 
 async function loadClientes() {
   try {
@@ -311,10 +280,6 @@ async function saveCliente(e) {
   }
 }
 
-// ============================================
-// USUÁRIOS
-// ============================================
-
 async function loadUsuarios() {
   try {
     const res = await fetch(`${API}/user`);
@@ -368,7 +333,7 @@ function editUsuario(row) {
   form.lastName.value = row.lastname;
   form.role.value = row.Role;
   form.email.value = row.email;
-  form.password.value = ''; // Não mostra senha por segurança
+  form.password.value = '';
   form.password.placeholder = 'Deixe vazio para manter a atual';
   form.password.required = false;
 }
@@ -410,10 +375,6 @@ async function saveUsuario(e) {
     toast('Erro: ' + err.message, 'error');
   }
 }
-
-// ============================================
-// EMBARCAÇÕES
-// ============================================
 
 async function loadEmbarcacoes() {
   try {
@@ -469,7 +430,6 @@ function editEmbarcacao(row) {
   form.capacidade.value = row.capacity;
   form.tamanho.value = row.Size;
   
-  // Selecionar proprietário
   setTimeout(() => {
     const select = document.getElementById('selectClienteEmbarcacao');
     if (select && row.cpf_proprietario) {
@@ -486,7 +446,6 @@ async function saveEmbarcacao(e) {
   try {
     let res;
     if (editId) {
-      // Atualização direta (não usa stored procedure)
       res = await fetch(`${API}/vessel/${editId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -498,7 +457,6 @@ async function saveEmbarcacao(e) {
         })
       });
     } else {
-      // Criação via Stored Procedure
       res = await fetch(`${API}/vessel`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -524,10 +482,6 @@ async function saveEmbarcacao(e) {
     toast('Erro: ' + err.message, 'error');
   }
 }
-
-// ============================================
-// ÓRGÃOS
-// ============================================
 
 async function loadOrgaos() {
   try {
@@ -612,10 +566,6 @@ async function saveOrgao(e) {
   }
 }
 
-// ============================================
-// PROCESSOS
-// ============================================
-
 async function loadProcessos() {
   try {
     const res = await fetch(`${API}/process`);
@@ -668,7 +618,6 @@ function editProcesso(row) {
   form.processNumber.value = row.processnumber;
   form.status.value = row.status;
   
-  // Encontrar id do órgão pelo nome
   setTimeout(() => {
     const orgao = cacheOrgaos.find(o => o.organname === row.organname);
     if (orgao) {
@@ -711,10 +660,6 @@ async function saveProcesso(e) {
     toast('Erro: ' + err.message, 'error');
   }
 }
-
-// ============================================
-// DOCUMENTOS
-// ============================================
 
 async function loadDocumentos() {
   try {
@@ -768,12 +713,10 @@ function editDocumento(row) {
   form.path.value = row.Path;
   
   setTimeout(() => {
-    // Encontrar cliente pelo CPF
     const cliente = cacheClientes.find(c => c.cpf === row.cpf_cliente);
     if (cliente) {
       document.getElementById('selectClienteDocumento').value = cliente.id_person;
     }
-    // Encontrar órgão pelo nome
     const orgao = cacheOrgaos.find(o => o.organname === row.organname);
     if (orgao) {
       document.getElementById('selectOrgaoDocumento').value = orgao.id;
@@ -815,10 +758,6 @@ async function saveDocumento(e) {
     toast('Erro: ' + err.message, 'error');
   }
 }
-
-// ============================================
-// INSPEÇÕES
-// ============================================
 
 async function loadInspecoes() {
   try {
@@ -871,17 +810,16 @@ function editInspecao(row) {
   form.editIdProcess.value = row.id_process;
   form.editCode.value = row.code;
   form.code.value = row.code;
-  form.code.readOnly = true; // Código é parte da PK, não pode alterar
+  form.code.readOnly = true;
   form.name.value = row.Name;
   
-  // Formatar data para input date
   const dateObj = new Date(row.date);
   const dateStr = dateObj.toISOString().split('T')[0];
   form.date.value = dateStr;
   
   setTimeout(() => {
     document.getElementById('selectProcessoInspecao').value = row.id_process;
-    document.getElementById('selectProcessoInspecao').disabled = true; // Não pode mudar processo
+    document.getElementById('selectProcessoInspecao').disabled = true;
   }, 100);
 }
 
@@ -931,10 +869,6 @@ async function saveInspecao(e) {
   }
 }
 
-// ============================================
-// DELETE (com Modal)
-// ============================================
-
 function confirmDelete(entity, ...args) {
   const modal = document.getElementById('confirmModal');
   const message = document.getElementById('confirmMessage');
@@ -980,10 +914,6 @@ async function executeDelete(entity, args) {
   }
 }
 
-// ============================================
-// CONSULTAS
-// ============================================
-
 async function executarConsulta(tipo) {
   const container = document.getElementById('consultaResultado');
   container.innerHTML = '<div class="table-empty">Carregando...</div>';
@@ -1019,10 +949,6 @@ async function executarConsulta(tipo) {
   }
 }
 
-// ============================================
-// FILTRO DE PESQUISA
-// ============================================
-
 function filterTable(entity) {
   const searchInput = document.getElementById('search' + capitalize(entity));
   const tableContainer = document.getElementById('table' + capitalize(entity));
@@ -1041,7 +967,6 @@ function filterTable(entity) {
     if (match) visibleCount++;
   });
   
-  // Atualizar contador
   const countDiv = tableContainer.querySelector('.table-count');
   if (countDiv) {
     const totalRows = rows.length;
@@ -1052,10 +977,6 @@ function filterTable(entity) {
     }
   }
 }
-
-// ============================================
-// HELPERS
-// ============================================
 
 function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);

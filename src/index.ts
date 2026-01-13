@@ -8,10 +8,6 @@ const PORT = 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
-// ============================================
-// AUTENTICAÇÃO
-// ============================================
-
 app.get('/api/test-connection', async (_req: Request, res: Response) => {
   const connected = await db.testConnection();
   res.json({ connected });
@@ -30,10 +26,6 @@ app.post('/api/login', async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
-
-// ============================================
-// CONSULTAS
-// ============================================
 
 app.get('/api/consultas/clientes-embarcacoes', async (_req: Request, res: Response) => {
   try {
@@ -89,10 +81,6 @@ app.get('/api/consultas/painel-geral', async (_req: Request, res: Response) => {
   }
 });
 
-// ============================================
-// CLIENT (Person + Client)
-// ============================================
-
 app.get('/api/client', async (_req: Request, res: Response) => {
   try {
     const result = await db.listarClientes();
@@ -134,10 +122,6 @@ app.delete('/api/client/:id', async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
-
-// ============================================
-// USER
-// ============================================
 
 app.get('/api/user', async (_req: Request, res: Response) => {
   try {
@@ -181,10 +165,6 @@ app.delete('/api/user/:id', async (req: Request, res: Response) => {
   }
 });
 
-// ============================================
-// VESSEL
-// ============================================
-
 app.get('/api/vessel', async (_req: Request, res: Response) => {
   try {
     const result = await db.listarEmbarcacoes();
@@ -198,7 +178,7 @@ app.post('/api/vessel', async (req: Request, res: Response) => {
   try {
     const { nome, tipo, capacidade, tamanho, cpfCliente } = req.body;
     await db.inserirEmbarcacao(nome, tipo, capacidade, tamanho, cpfCliente);
-    res.json({ success: true, message: 'Embarcação registrada via Stored Procedure!' });
+    res.json({ success: true, message: 'Embarcação registrada!' });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -226,10 +206,6 @@ app.delete('/api/vessel/:id', async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
-
-// ============================================
-// ORGAN
-// ============================================
 
 app.get('/api/organ', async (_req: Request, res: Response) => {
   try {
@@ -273,10 +249,6 @@ app.delete('/api/organ/:id', async (req: Request, res: Response) => {
   }
 });
 
-// ============================================
-// PROCESS
-// ============================================
-
 app.get('/api/process', async (_req: Request, res: Response) => {
   try {
     const result = await db.listarProcessos();
@@ -319,10 +291,6 @@ app.delete('/api/process/:id', async (req: Request, res: Response) => {
   }
 });
 
-// ============================================
-// DOCUMENT
-// ============================================
-
 app.get('/api/document', async (_req: Request, res: Response) => {
   try {
     const result = await db.listarDocumentos();
@@ -364,10 +332,6 @@ app.delete('/api/document/:id', async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
-
-// ============================================
-// INSPECTION
-// ============================================
 
 app.get('/api/inspection', async (_req: Request, res: Response) => {
   try {
@@ -415,10 +379,6 @@ app.delete('/api/inspection/:idProcess/:code', async (req: Request, res: Respons
   }
 });
 
-// ============================================
-// PHONES
-// ============================================
-
 app.get('/api/phones/:idClient', async (req: Request, res: Response) => {
   try {
     const result = await db.listarTelefonesPorCliente(parseInt(req.params.idClient));
@@ -452,10 +412,6 @@ app.delete('/api/phones/:idClient/:phone', async (req: Request, res: Response) =
     res.status(500).json({ success: false, error: error.message });
   }
 });
-
-// ============================================
-// START
-// ============================================
 
 app.listen(PORT, async () => {
   console.log(`

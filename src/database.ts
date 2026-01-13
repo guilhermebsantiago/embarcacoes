@@ -20,10 +20,6 @@ export async function testConnection(): Promise<boolean> {
   }
 }
 
-// ============================================
-// AUTENTICAÇÃO
-// ============================================
-
 export async function login(email: string, password: string): Promise<QueryResult> {
   return pool.query(`
     SELECT u.Id_Person, u."Role", u.Email, pe.FirstName, pe.LastName
@@ -32,10 +28,6 @@ export async function login(email: string, password: string): Promise<QueryResul
     WHERE u.Email = $1 AND u."Password" = $2
   `, [email, password]);
 }
-
-// ============================================
-// CONSULTAS
-// ============================================
 
 export async function getClientesEmbarcacoes(): Promise<QueryResult> {
   return pool.query(`
@@ -99,10 +91,6 @@ export async function getPainelGeral(): Promise<QueryResult> {
   `);
 }
 
-// ============================================
-// CLIENT (Person + Client juntos)
-// ============================================
-
 export async function listarClientes(): Promise<QueryResult> {
   return pool.query(`
     SELECT c.Id_Person, pe.FirstName, pe.LastName, c.CPF, c.Phone, c.RG
@@ -119,7 +107,6 @@ export async function inserirCliente(
   rg: string | null, 
   phone: string | null
 ): Promise<QueryResult> {
-  // Primeiro insere Person, depois Client
   const personResult = await pool.query(
     'INSERT INTO Person (FirstName, LastName) VALUES ($1, $2) RETURNING Id',
     [firstName, lastName]
@@ -151,13 +138,8 @@ export async function atualizarCliente(
 }
 
 export async function removerCliente(idPerson: number): Promise<QueryResult> {
-  // CASCADE vai deletar o Client automaticamente
   return pool.query('DELETE FROM Person WHERE Id = $1 RETURNING *', [idPerson]);
 }
-
-// ============================================
-// USER
-// ============================================
 
 export async function listarUsuarios(): Promise<QueryResult> {
   return pool.query(`
@@ -175,14 +157,12 @@ export async function inserirUsuario(
   password: string, 
   email: string
 ): Promise<QueryResult> {
-  // Primeiro cria uma nova Person para o usuário
   const personResult = await pool.query(
     'INSERT INTO Person (FirstName, LastName) VALUES ($1, $2) RETURNING Id',
     [firstName, lastName]
   );
   const personId = personResult.rows[0].id;
   
-  // Depois cria o User vinculado a essa Person
   return pool.query(
     'INSERT INTO "User" (Id_Person, "Role", "Password", Email) VALUES ($1, $2, $3, $4) RETURNING Id_Person, "Role", Email',
     [personId, role, password, email]
@@ -197,13 +177,11 @@ export async function atualizarUsuario(
   email: string,
   password?: string
 ): Promise<QueryResult> {
-  // Atualiza os dados da Person
   await pool.query(
     'UPDATE Person SET FirstName = $1, LastName = $2 WHERE Id = $3',
     [firstName, lastName, idPerson]
   );
   
-  // Atualiza os dados do User
   if (password) {
     return pool.query(
       'UPDATE "User" SET "Role" = $1, Email = $2, "Password" = $3 WHERE Id_Person = $4 RETURNING *',
@@ -219,10 +197,6 @@ export async function atualizarUsuario(
 export async function removerUsuario(idPerson: number): Promise<QueryResult> {
   return pool.query('DELETE FROM "User" WHERE Id_Person = $1 RETURNING *', [idPerson]);
 }
-
-// ============================================
-// VESSEL
-// ============================================
 
 export async function listarEmbarcacoes(): Promise<QueryResult> {
   return pool.query(`
@@ -243,7 +217,6 @@ export async function inserirEmbarcacao(
   tamanho: number,
   cpfCliente: string
 ): Promise<QueryResult> {
-  // Busca o Id do cliente pelo CPF
   const clientResult = await pool.query(
     'SELECT Id_Person FROM Client WHERE CPF = $1',
     [cpfCliente]
@@ -255,7 +228,6 @@ export async function inserirEmbarcacao(
   
   const idClient = clientResult.rows[0].id_person;
   
-  // Insere a embarcação diretamente (o trigger de validação será executado automaticamente)
   return pool.query(
     'INSERT INTO Vessel ("Name", "Type", Capacity, "Size", Id_Client) VALUES ($1, $2, $3, $4, $5) RETURNING *',
     [nome, tipo, capacidade, tamanho, idClient]
@@ -279,10 +251,6 @@ export async function removerEmbarcacao(id: number): Promise<QueryResult> {
   return pool.query('DELETE FROM Vessel WHERE Id = $1 RETURNING *', [id]);
 }
 
-// ============================================
-// ORGAN
-// ============================================
-
 export async function listarOrgaos(): Promise<QueryResult> {
   return pool.query('SELECT Id, OrganName, Sail FROM Organ ORDER BY OrganName');
 }
@@ -304,10 +272,6 @@ export async function atualizarOrgao(id: number, organName: string, sail: string
 export async function removerOrgao(id: number): Promise<QueryResult> {
   return pool.query('DELETE FROM Organ WHERE Id = $1 RETURNING *', [id]);
 }
-
-// ============================================
-// PROCESS
-// ============================================
 
 export async function listarProcessos(): Promise<QueryResult> {
   return pool.query(`
@@ -346,10 +310,6 @@ export async function atualizarProcesso(
 export async function removerProcesso(id: number): Promise<QueryResult> {
   return pool.query('DELETE FROM Process WHERE Id = $1 RETURNING *', [id]);
 }
-
-// ============================================
-// DOCUMENT
-// ============================================
 
 export async function listarDocumentos(): Promise<QueryResult> {
   return pool.query(`
@@ -390,10 +350,6 @@ export async function removerDocumento(id: number): Promise<QueryResult> {
   return pool.query('DELETE FROM "Document" WHERE Id = $1 RETURNING *', [id]);
 }
 
-// ============================================
-// INSPECTION
-// ============================================
-
 export async function listarInspecoes(): Promise<QueryResult> {
   return pool.query(`
     SELECT i.Id_Process, i.Code, i."Name", i.Date, p.ProcessName
@@ -433,10 +389,6 @@ export async function removerInspecao(idProcess: number, code: string): Promise<
     [idProcess, code]
   );
 }
-
-// ============================================
-// PHONES
-// ============================================
 
 export async function listarTelefonesPorCliente(idClient: number): Promise<QueryResult> {
   return pool.query('SELECT Phone FROM Phones WHERE Id_Client = $1', [idClient]);
