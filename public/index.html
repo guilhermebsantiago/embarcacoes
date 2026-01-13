@@ -157,11 +157,15 @@
             <input type="hidden" name="editId">
             <div class="form-row">
               <div class="form-group">
-                <label>Cliente *</label>
-                <select name="idPerson" id="selectClienteUsuario" required>
-                  <option value="">Selecione um cliente...</option>
-                </select>
+                <label>Primeiro Nome *</label>
+                <input type="text" name="firstName" required maxlength="20">
               </div>
+              <div class="form-group">
+                <label>Sobrenome *</label>
+                <input type="text" name="lastName" required maxlength="20">
+              </div>
+            </div>
+            <div class="form-row">
               <div class="form-group">
                 <label>Perfil *</label>
                 <select name="role" required>
@@ -171,16 +175,14 @@
                   <option value="Admin">Admin</option>
                 </select>
               </div>
-            </div>
-            <div class="form-row">
               <div class="form-group">
                 <label>Email *</label>
                 <input type="email" name="email" required maxlength="150">
               </div>
-              <div class="form-group">
-                <label>Senha *</label>
-                <input type="password" name="password" required maxlength="255">
-              </div>
+            </div>
+            <div class="form-group">
+              <label>Senha *</label>
+              <input type="password" name="password" required maxlength="255">
             </div>
             <div class="form-actions">
               <button type="submit" class="btn btn-success">Salvar</button>

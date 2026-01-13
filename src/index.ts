@@ -150,8 +150,8 @@ app.get('/api/user', async (_req: Request, res: Response) => {
 
 app.post('/api/user', async (req: Request, res: Response) => {
   try {
-    const { idPerson, role, password, email } = req.body;
-    await db.inserirUsuario(idPerson, role, password, email);
+    const { firstName, lastName, role, password, email } = req.body;
+    await db.inserirUsuario(firstName, lastName, role, password, email);
     res.json({ success: true, message: 'Usuário criado!' });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
@@ -161,8 +161,8 @@ app.post('/api/user', async (req: Request, res: Response) => {
 app.put('/api/user/:id', async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
-    const { role, email, password } = req.body;
-    await db.atualizarUsuario(id, role, email, password);
+    const { firstName, lastName, role, email, password } = req.body;
+    await db.atualizarUsuario(id, firstName, lastName, role, email, password);
     res.json({ success: true, message: 'Usuário atualizado!' });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });

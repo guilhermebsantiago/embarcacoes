@@ -37,7 +37,7 @@ BEGIN
     -- Insere a nova embarcação
     INSERT INTO Vessel ("Name", "Type", Capacity, "Size", Id_Client)
     VALUES (p_nome, p_tipo, p_capacidade, p_tamanho, v_id_client)
-    RETURNING "Id" INTO v_id_vessel;
+    RETURNING Id INTO v_id_vessel;
     
     -- Mensagem de confirmação
     RAISE NOTICE 'Embarcação "%" registrada com sucesso! ID: %', p_nome, v_id_vessel;

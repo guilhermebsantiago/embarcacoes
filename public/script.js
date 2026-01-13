@@ -181,9 +181,7 @@ function resetForm(entity) {
 }
 
 async function loadSelectsForEntity(entity) {
-  if (['usuarios', 'embarcacoes', 'documentos'].includes(entity)) {
-    populateSelect('selectClienteUsuario', cacheClientes, 'id_person', 
-      item => `${item.firstname} ${item.lastname} (${item.cpf})`);
+  if (['embarcacoes', 'documentos'].includes(entity)) {
     populateSelect('selectClienteEmbarcacao', cacheClientes, 'cpf', 
       item => `${item.firstname} ${item.lastname} - ${item.cpf}`);
     populateSelect('selectClienteDocumento', cacheClientes, 'id_person', 
@@ -366,17 +364,13 @@ function editUsuario(row) {
   openFormForEdit('usuarios', row);
   const form = document.getElementById('formUsuarioData');
   form.editId.value = row.id_person;
-  
-  // Selecionar o cliente correto no select
-  setTimeout(() => {
-    const select = document.getElementById('selectClienteUsuario');
-    if (select) select.value = row.id_person;
-    form.role.value = row.Role;
-    form.email.value = row.email;
-    form.password.value = ''; // Não mostra senha por segurança
-    form.password.placeholder = 'Deixe vazio para manter a atual';
-    form.password.required = false;
-  }, 100);
+  form.firstName.value = row.firstname;
+  form.lastName.value = row.lastname;
+  form.role.value = row.Role;
+  form.email.value = row.email;
+  form.password.value = ''; // Não mostra senha por segurança
+  form.password.placeholder = 'Deixe vazio para manter a atual';
+  form.password.required = false;
 }
 
 async function saveUsuario(e) {
@@ -385,7 +379,8 @@ async function saveUsuario(e) {
   const editId = form.editId.value;
   
   const payload = {
-    idPerson: parseInt(form.idPerson.value),
+    firstName: form.firstName.value,
+    lastName: form.lastName.value,
     role: form.role.value,
     email: form.email.value,
     password: form.password.value || undefined

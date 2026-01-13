@@ -169,23 +169,41 @@ export async function listarUsuarios(): Promise<QueryResult> {
 }
 
 export async function inserirUsuario(
-  idPerson: number, 
+  firstName: string,
+  lastName: string,
   role: string, 
   password: string, 
   email: string
 ): Promise<QueryResult> {
+  // Primeiro cria uma nova Person para o usuário
+  const personResult = await pool.query(
+    'INSERT INTO Person (FirstName, LastName) VALUES ($1, $2) RETURNING Id',
+    [firstName, lastName]
+  );
+  const personId = personResult.rows[0].id;
+  
+  // Depois cria o User vinculado a essa Person
   return pool.query(
     'INSERT INTO "User" (Id_Person, "Role", "Password", Email) VALUES ($1, $2, $3, $4) RETURNING Id_Person, "Role", Email',
-    [idPerson, role, password, email]
+    [personId, role, password, email]
   );
 }
 
 export async function atualizarUsuario(
   idPerson: number,
+  firstName: string,
+  lastName: string,
   role: string,
   email: string,
   password?: string
 ): Promise<QueryResult> {
+  // Atualiza os dados da Person
+  await pool.query(
+    'UPDATE Person SET FirstName = $1, LastName = $2 WHERE Id = $3',
+    [firstName, lastName, idPerson]
+  );
+  
+  // Atualiza os dados do User
   if (password) {
     return pool.query(
       'UPDATE "User" SET "Role" = $1, Email = $2, "Password" = $3 WHERE Id_Person = $4 RETURNING *',
@@ -225,10 +243,22 @@ export async function inserirEmbarcacao(
   tamanho: number,
   cpfCliente: string
 ): Promise<QueryResult> {
-  // Usa Stored Procedure
+  // Busca o Id do cliente pelo CPF
+  const clientResult = await pool.query(
+    'SELECT Id_Person FROM Client WHERE CPF = $1',
+    [cpfCliente]
+  );
+  
+  if (clientResult.rows.length === 0) {
+    throw new Error(`Cliente com CPF ${cpfCliente} não encontrado.`);
+  }
+  
+  const idClient = clientResult.rows[0].id_person;
+  
+  // Insere a embarcação diretamente (o trigger de validação será executado automaticamente)
   return pool.query(
-    'CALL sp_RegistrarEmbarcacao($1, $2, $3, $4, $5)',
-    [nome, tipo, capacidade, tamanho, cpfCliente]
+    'INSERT INTO Vessel ("Name", "Type", Capacity, "Size", Id_Client) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+    [nome, tipo, capacidade, tamanho, idClient]
   );
 }
 
