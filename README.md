@@ -1,14 +1,14 @@
-# 🚢 Sistema de Gerenciamento de Embarcações
+# Sistema de Gerenciamento de Embarcações
 
 Sistema web para gerenciamento de embarcações, clientes, processos e documentos desenvolvido com **Node.js**, **TypeScript**, **Express** e **PostgreSQL**.
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 - Node.js 18+
 - PostgreSQL 14+
 - Yarn ou NPM
 
-## 🚀 Instalação
+## Instalação
 
 1. Clone o repositório:
 ```bash
@@ -38,7 +38,7 @@ npm start
 
 6. Acesse: **http://localhost:3000**
 
-## 🛠️ Scripts Disponíveis
+## Scripts Disponíveis
 
 | Comando | Descrição |
 |---------|-----------|
@@ -46,7 +46,7 @@ npm start
 | `npm start` | Inicia o servidor (produção) |
 | `npm run dev` | Inicia com ts-node (desenvolvimento) |
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 bd_projeto/
@@ -63,7 +63,7 @@ bd_projeto/
 └── README.md
 ```
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Autenticação
 | Método | Rota | Descrição |
@@ -137,7 +137,7 @@ bd_projeto/
 | GET | `/api/consultas/embarcacao-maior` | Embarcação com maior capacidade |
 | GET | `/api/consultas/painel-geral` | Visão geral do sistema |
 
-## 🗄️ Banco de Dados
+## Banco de Dados
 
 ### Configuração
 ```typescript
@@ -161,23 +161,23 @@ const pool = new Pool({
 - `Inspection` - Inspeções
 - `Phones` - Telefones dos clientes
 
-## 🔐 Funcionalidades
+## Funcionalidades
 
-- ✅ Autenticação de usuários
-- ✅ CRUD completo de todas as entidades
-- ✅ Consultas e relatórios
-- ✅ Interface responsiva
-- ✅ Validação de dados no frontend e backend
-- ✅ Trigger para validação de embarcações
-- ✅ Controle de permissões por perfil
+- Autenticação de usuários
+- CRUD completo de todas as entidades
+- Consultas e relatórios
+- Interface responsiva
+- Validação de dados no frontend e backend
+- Trigger para validação de embarcações
+- Controle de permissões por perfil
 
-## 🎨 Tecnologias
+## Tecnologias
 
 - **Backend:** Node.js, Express, TypeScript
 - **Banco:** PostgreSQL
 - **Frontend:** HTML5, CSS3, JavaScript
 - **Estilo:** CSS customizado com variáveis
 
-## 📄 Licença
+## Licença
 
 Projeto desenvolvido para fins acadêmicos - Disciplina de Banco de Dados.
